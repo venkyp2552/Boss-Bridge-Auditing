@@ -27,6 +27,7 @@ import { L1Vault } from "./L1Vault.sol";
 contract L1BossBridge is Ownable, Pausable, ReentrancyGuard {
     using SafeERC20 for IERC20;
 
+    //@ audit-gas use constant for gas savings
     uint256 public DEPOSIT_LIMIT = 100_000 ether;
 
     IERC20 public immutable token;
@@ -49,6 +50,7 @@ contract L1BossBridge is Ownable, Pausable, ReentrancyGuard {
     function pause() external onlyOwner {
         _pause();
     }
+    
 
     function unpause() external onlyOwner {
         _unpause();
@@ -104,9 +106,9 @@ contract L1BossBridge is Ownable, Pausable, ReentrancyGuard {
     /*
      * @notice This is the function responsible for withdrawing ETH from L2 to L1.
      *
-     * @param v The v value of the signature
-     * @param r The r value of the signature
-     * @param s The s value of the signature
+     * @param v The v value of the signature //e second part
+     * @param r The r value of the signature //e one part of the signature output
+     * @param s The s value of the signature //e signer address
      * @param message The message/data to be sent to L1 (can be blank)
      */
     function sendToL1(uint8 v, bytes32 r, bytes32 s, bytes memory message) public nonReentrant whenNotPaused {
