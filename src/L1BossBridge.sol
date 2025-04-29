@@ -69,6 +69,7 @@ contract L1BossBridge is Ownable, Pausable, ReentrancyGuard {
      * @param l2Recipient The address of the user who will receive the tokens on L2
      * @param amount The amount of tokens to deposit
      */
+     //@audit-High using from address lead to stolen funds use msg.sender
     function depositTokensToL2(address from, address l2Recipient, uint256 amount) external whenNotPaused {
         if (token.balanceOf(address(vault)) + amount > DEPOSIT_LIMIT) {
             revert L1BossBridge__DepositLimitReached();
@@ -111,6 +112,8 @@ contract L1BossBridge is Ownable, Pausable, ReentrancyGuard {
      * @param s The s value of the signature //e signer address
      * @param message The message/data to be sent to L1 (can be blank)
      */
+
+    //@audit-High anyone can send to L1 must be check onlyOwner can 
     function sendToL1(uint8 v, bytes32 r, bytes32 s, bytes memory message) public nonReentrant whenNotPaused {
         address signer = ECDSA.recover(MessageHashUtils.toEthSignedMessageHash(keccak256(message)), v, r, s);
 
