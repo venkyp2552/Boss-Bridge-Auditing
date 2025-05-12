@@ -38,16 +38,16 @@ The bridge operator is in charge of signing withdrawal requests submitted by use
 ## Quickstart
 
 ```
-git clone https://github.com/Cyfrin/7-boss-bridge-audit
-cd 7-boss-bridge-audit
+git clone https://github.com/venkyp2552/Boss-Bridge-Auditing
+cd Boss-Bridge-Auditing
 make
 ```
 
 or
 
 ```
-git clone https://github.com/Cyfrin/7-boss-bridge-audit
-cd 7-boss-bridge-audit
+git clone https://github.com/venkyp2552/Boss-Bridge-Auditing
+cd Boss-Bridge-Auditing
 forge install
 forge build
 ```
